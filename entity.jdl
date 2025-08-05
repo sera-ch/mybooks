@@ -1,0 +1,11 @@
+entity Book {
+  name String
+}
+
+entity Author {
+  name String
+}
+
+relationship OneToMany {
+  Author to Book
+}
