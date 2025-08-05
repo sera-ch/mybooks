@@ -7,10 +7,12 @@ import { IAuthor } from '@/shared/model/author.model';
 
 import { IBook, Book } from '@/shared/model/book.model';
 import BookService from './book.service';
+import { ReadStatus } from '@/shared/model/enumerations/read-status.model';
 
 const validations: any = {
   book: {
     name: {},
+    readStatus: {},
   },
 };
 
@@ -26,6 +28,7 @@ export default class BookUpdate extends Vue {
   @Inject('authorService') private authorService: () => AuthorService;
 
   public authors: IAuthor[] = [];
+  public readStatusValues: string[] = Object.keys(ReadStatus);
   public isSaving = false;
   public currentLanguage = '';
 

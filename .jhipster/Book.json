@@ -8,6 +8,11 @@
     {
       "fieldName": "name",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "readStatus",
+      "fieldType": "ReadStatus",
+      "fieldValues": "WISHLIST,UNREAD,IN_PROGRESS,FINISHED"
     }
   ],
   "fluentMethods": true,

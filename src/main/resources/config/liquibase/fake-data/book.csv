@@ -1,11 +1,11 @@
-id;name
-1;Table Fish
-2;Dynamic programming
-3;forecast
-4;Agent
-5;compress state mobile
-6;high-level
-7;Georgia Borders
-8;calculating Overpass
-9;ADP synthesizing Developer
-10;Representative parsing
+id;name;read_status
+1;Table Fish;IN_PROGRESS
+2;cyan Forward forecast;WISHLIST
+3;Principal compress state;FINISHED
+4;intuitive Center Georgia;IN_PROGRESS
+5;Designer connect;IN_PROGRESS
+6;Accountability;IN_PROGRESS
+7;auxiliary Pula Representative;FINISHED
+8;Bedfordshire driver Soft;WISHLIST
+9;Soft;FINISHED
+10;Points violet;IN_PROGRESS

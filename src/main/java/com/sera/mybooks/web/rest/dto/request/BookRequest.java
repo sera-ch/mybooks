@@ -2,16 +2,19 @@ package com.sera.mybooks.web.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sera.mybooks.domain.Book;
+import com.sera.mybooks.domain.enumeration.ReadStatus;
 
 @JsonIgnoreProperties
 public class BookRequest {
 
     String name;
     String author;
+    ReadStatus readStatus;
 
-    public BookRequest(String name, String author) {
+    public BookRequest(String name, String author, ReadStatus readStatus) {
         this.name = name;
         this.author = author;
+        this.readStatus = readStatus;
     }
 
     public String getName() {
@@ -20,5 +23,9 @@ public class BookRequest {
 
     public String getAuthor() {
         return this.author;
+    }
+
+    public ReadStatus getReadStatus() {
+        return readStatus;
     }
 }

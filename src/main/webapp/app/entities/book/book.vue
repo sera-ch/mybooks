@@ -24,6 +24,7 @@
           <tr>
             <th scope="row"><span>ID</span></th>
             <th scope="row"><span>Name</span></th>
+            <th scope="row"><span>Read Status</span></th>
             <th scope="row"><span>Author</span></th>
             <th scope="row"></th>
           </tr>
@@ -34,6 +35,7 @@
               <router-link :to="{ name: 'BookView', params: { bookId: book.id } }">{{ book.id }}</router-link>
             </td>
             <td>{{ book.name }}</td>
+            <td>{{ book.readStatus }}</td>
             <td>
               <div v-if="book.author">
                 <router-link :to="{ name: 'AuthorView', params: { authorId: book.author.id } }">{{ book.author.id }}</router-link>

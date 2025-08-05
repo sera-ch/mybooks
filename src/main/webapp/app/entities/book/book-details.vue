@@ -11,6 +11,12 @@
             <span>{{ book.name }}</span>
           </dd>
           <dt>
+            <span>Read Status</span>
+          </dt>
+          <dd>
+            <span>{{ book.readStatus }}</span>
+          </dd>
+          <dt>
             <span>Author</span>
           </dt>
           <dd>

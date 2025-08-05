@@ -21,6 +21,19 @@
             />
           </div>
           <div class="form-group">
+            <label class="form-control-label" for="book-readStatus">Read Status</label>
+            <select
+              class="form-control"
+              name="readStatus"
+              :class="{ valid: !$v.book.readStatus.$invalid, invalid: $v.book.readStatus.$invalid }"
+              v-model="$v.book.readStatus.$model"
+              id="book-readStatus"
+              data-cy="readStatus"
+            >
+              <option v-for="readStatus in readStatusValues" :key="readStatus" v-bind:value="readStatus">{{ readStatus }}</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label class="form-control-label" for="book-author">Author</label>
             <select class="form-control" id="book-author" data-cy="author" name="author" v-model="book.author">
               <option v-bind:value="null"></option>

@@ -56,7 +56,7 @@ public class BookResource {
     public ResponseEntity<Book> createBook(@RequestBody BookRequest book) throws URISyntaxException {
         log.debug("REST request to save Book : {}", book);
         Author author = this.authorRepository.findOneByName(book.getAuthor()).orElseThrow(); // TODO: Create custom errors
-        Book result = bookRepository.save(new Book().name(book.getName()).author(author));
+        Book result = bookRepository.save(new Book().name(book.getName()).author(author).readStatus(book.getReadStatus()));
         return ResponseEntity
             .created(new URI("/api/books/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -126,6 +126,9 @@ public class BookResource {
             .map(existingBook -> {
                 if (book.getName() != null) {
                     existingBook.setName(book.getName());
+                }
+                if (book.getReadStatus() != null) {
+                    existingBook.setReadStatus(book.getReadStatus());
                 }
 
                 return existingBook;

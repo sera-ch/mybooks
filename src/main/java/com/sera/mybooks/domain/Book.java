@@ -1,6 +1,7 @@
 package com.sera.mybooks.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sera.mybooks.domain.enumeration.ReadStatus;
 import java.io.Serializable;
 import javax.persistence.*;
 
@@ -21,6 +22,10 @@ public class Book implements Serializable {
 
     @Column(name = "name")
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "read_status")
+    private ReadStatus readStatus;
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "books" }, allowSetters = true)
@@ -52,6 +57,19 @@ public class Book implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ReadStatus getReadStatus() {
+        return this.readStatus;
+    }
+
+    public Book readStatus(ReadStatus readStatus) {
+        this.setReadStatus(readStatus);
+        return this;
+    }
+
+    public void setReadStatus(ReadStatus readStatus) {
+        this.readStatus = readStatus;
     }
 
     public Author getAuthor() {
@@ -92,6 +110,7 @@ public class Book implements Serializable {
         return "Book{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", readStatus='" + getReadStatus() + "'" +
             "}";
     }
 }

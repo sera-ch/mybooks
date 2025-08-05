@@ -4,6 +4,7 @@ import sinon from 'sinon';
 
 import BookService from '@/entities/book/book.service';
 import { Book } from '@/shared/model/book.model';
+import { ReadStatus } from '@/shared/model/enumerations/read-status.model';
 
 const error = {
   response: {
@@ -29,7 +30,7 @@ describe('Service Tests', () => {
 
     beforeEach(() => {
       service = new BookService();
-      elemDefault = new Book(123, 'AAAAAAA');
+      elemDefault = new Book(123, 'AAAAAAA', ReadStatus.WISHLIST);
     });
 
     describe('Service methods', () => {
@@ -82,6 +83,7 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             name: 'BBBBBB',
+            readStatus: 'BBBBBB',
           },
           elemDefault
         );
@@ -106,7 +108,12 @@ describe('Service Tests', () => {
       });
 
       it('should partial update a Book', async () => {
-        const patchObject = Object.assign({}, new Book());
+        const patchObject = Object.assign(
+          {
+            readStatus: 'BBBBBB',
+          },
+          new Book()
+        );
         const returnedFromService = Object.assign(patchObject, elemDefault);
 
         const expected = Object.assign({}, returnedFromService);
@@ -132,6 +139,7 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             name: 'BBBBBB',
+            readStatus: 'BBBBBB',
           },
           elemDefault
         );

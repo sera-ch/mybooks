@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.sera.mybooks.IntegrationTest;
 import com.sera.mybooks.domain.Book;
+import com.sera.mybooks.domain.enumeration.ReadStatus;
 import com.sera.mybooks.repository.BookRepository;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,9 @@ class BookResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final ReadStatus DEFAULT_READ_STATUS = ReadStatus.WISHLIST;
+    private static final ReadStatus UPDATED_READ_STATUS = ReadStatus.UNREAD;
+
     private static final String ENTITY_API_URL = "/api/books";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -56,7 +60,7 @@ class BookResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Book createEntity(EntityManager em) {
-        Book book = new Book().name(DEFAULT_NAME);
+        Book book = new Book().name(DEFAULT_NAME).readStatus(DEFAULT_READ_STATUS);
         return book;
     }
 
@@ -67,7 +71,7 @@ class BookResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Book createUpdatedEntity(EntityManager em) {
-        Book book = new Book().name(UPDATED_NAME);
+        Book book = new Book().name(UPDATED_NAME).readStatus(UPDATED_READ_STATUS);
         return book;
     }
 
@@ -90,6 +94,7 @@ class BookResourceIT {
         assertThat(bookList).hasSize(databaseSizeBeforeCreate + 1);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testBook.getReadStatus()).isEqualTo(DEFAULT_READ_STATUS);
     }
 
     @Test
@@ -122,7 +127,8 @@ class BookResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(book.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].readStatus").value(hasItem(DEFAULT_READ_STATUS.toString())));
     }
 
     @Test
@@ -137,7 +143,8 @@ class BookResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(book.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.readStatus").value(DEFAULT_READ_STATUS.toString()));
     }
 
     @Test
@@ -159,7 +166,7 @@ class BookResourceIT {
         Book updatedBook = bookRepository.findById(book.getId()).get();
         // Disconnect from session so that the updates on updatedBook are not directly saved in db
         em.detach(updatedBook);
-        updatedBook.name(UPDATED_NAME);
+        updatedBook.name(UPDATED_NAME).readStatus(UPDATED_READ_STATUS);
 
         restBookMockMvc
             .perform(
@@ -174,6 +181,7 @@ class BookResourceIT {
         assertThat(bookList).hasSize(databaseSizeBeforeUpdate);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testBook.getReadStatus()).isEqualTo(UPDATED_READ_STATUS);
     }
 
     @Test
@@ -257,6 +265,7 @@ class BookResourceIT {
         assertThat(bookList).hasSize(databaseSizeBeforeUpdate);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testBook.getReadStatus()).isEqualTo(DEFAULT_READ_STATUS);
     }
 
     @Test
@@ -271,7 +280,7 @@ class BookResourceIT {
         Book partialUpdatedBook = new Book();
         partialUpdatedBook.setId(book.getId());
 
-        partialUpdatedBook.name(UPDATED_NAME);
+        partialUpdatedBook.name(UPDATED_NAME).readStatus(UPDATED_READ_STATUS);
 
         restBookMockMvc
             .perform(
@@ -286,6 +295,7 @@ class BookResourceIT {
         assertThat(bookList).hasSize(databaseSizeBeforeUpdate);
         Book testBook = bookList.get(bookList.size() - 1);
         assertThat(testBook.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testBook.getReadStatus()).isEqualTo(UPDATED_READ_STATUS);
     }
 
     @Test
