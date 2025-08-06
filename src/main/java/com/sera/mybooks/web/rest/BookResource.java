@@ -55,7 +55,7 @@ public class BookResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/books")
-    public ResponseEntity<Book> createBook(@RequestBody BookRequest book) throws URISyntaxException {
+    public ResponseEntity<BookResponse> createBook(@RequestBody BookRequest book) throws URISyntaxException {
         log.debug("REST request to save Book : {}", book);
         Author author =
             this.authorRepository.findOneByName(book.getAuthor()).orElseThrow(() -> new AuthorNotFoundException(book.getAuthor()));
@@ -67,7 +67,7 @@ public class BookResource {
         return ResponseEntity
             .created(new URI("/api/books/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+            .body(BookResponse.from(result));
     }
 
     /**
