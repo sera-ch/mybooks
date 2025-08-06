@@ -3,6 +3,7 @@ package com.sera.mybooks.web.rest;
 import com.sera.mybooks.domain.Author;
 import com.sera.mybooks.repository.AuthorRepository;
 import com.sera.mybooks.web.rest.dto.request.AuthorRequest;
+import com.sera.mybooks.web.rest.errors.AuthorAlreadyExistsException;
 import com.sera.mybooks.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,6 +50,10 @@ public class AuthorResource {
     @PostMapping("/authors")
     public ResponseEntity<Author> createAuthor(@RequestBody AuthorRequest author) throws URISyntaxException {
         log.debug("REST request to save Author : {}", author);
+        Optional<Author> exists = authorRepository.findOneByName(author.getName());
+        if (exists.isPresent()) {
+            throw new AuthorAlreadyExistsException(author.getName());
+        }
         Author result = authorRepository.save(new Author().name(author.getName()));
         return ResponseEntity
             .created(new URI("/api/authors/" + result.getId()))
@@ -171,5 +176,17 @@ public class AuthorResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code DELETE  /authors} : delete all authors, for debugging only
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/authors")
+    public ResponseEntity<Void> deleteAuthors() {
+        log.debug("REST request to delete all Authors");
+        authorRepository.deleteAll();
+        return ResponseEntity.noContent().build();
     }
 }

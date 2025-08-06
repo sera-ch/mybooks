@@ -6,7 +6,9 @@ import com.sera.mybooks.repository.AuthorRepository;
 import com.sera.mybooks.repository.BookRepository;
 import com.sera.mybooks.web.rest.dto.request.BookRequest;
 import com.sera.mybooks.web.rest.dto.response.BookResponse;
+import com.sera.mybooks.web.rest.errors.AuthorNotFoundException;
 import com.sera.mybooks.web.rest.errors.BadRequestAlertException;
+import com.sera.mybooks.web.rest.errors.BookAlreadyExistsException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -55,7 +57,12 @@ public class BookResource {
     @PostMapping("/books")
     public ResponseEntity<Book> createBook(@RequestBody BookRequest book) throws URISyntaxException {
         log.debug("REST request to save Book : {}", book);
-        Author author = this.authorRepository.findOneByName(book.getAuthor()).orElseThrow(); // TODO: Create custom errors
+        Author author =
+            this.authorRepository.findOneByName(book.getAuthor()).orElseThrow(() -> new AuthorNotFoundException(book.getAuthor()));
+        Long exists = this.bookRepository.countByNameAndAuthor(book.getName(), book.getAuthor());
+        if (exists != 0) {
+            throw new BookAlreadyExistsException(book.getName(), book.getAuthor());
+        }
         Book result = bookRepository.save(new Book().name(book.getName()).author(author).readStatus(book.getReadStatus()));
         return ResponseEntity
             .created(new URI("/api/books/" + result.getId()))
@@ -179,5 +186,17 @@ public class BookResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code DELETE  /books} : delete all books, for debugging only
+     *
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/books")
+    public ResponseEntity<Void> deleteBooks() {
+        log.debug("REST request to delete all Books");
+        this.bookRepository.deleteAll();
+        return ResponseEntity.noContent().build();
     }
 }
