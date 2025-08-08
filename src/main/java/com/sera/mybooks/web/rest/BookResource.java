@@ -6,6 +6,7 @@ import com.sera.mybooks.repository.AuthorRepository;
 import com.sera.mybooks.repository.BookRepository;
 import com.sera.mybooks.web.rest.dto.request.BookRequest;
 import com.sera.mybooks.web.rest.dto.response.BookResponse;
+import com.sera.mybooks.web.rest.dto.response.BooksResponse;
 import com.sera.mybooks.web.rest.errors.AuthorNotFoundException;
 import com.sera.mybooks.web.rest.errors.BadRequestAlertException;
 import com.sera.mybooks.web.rest.errors.BookAlreadyExistsException;
@@ -30,6 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 @Transactional
+@CrossOrigin
 public class BookResource {
 
     private final Logger log = LoggerFactory.getLogger(BookResource.class);
@@ -154,9 +156,10 @@ public class BookResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of books in body.
      */
     @GetMapping("/books")
-    public List<BookResponse> getAllBooks() {
+    public ResponseEntity<BooksResponse> getAllBooks() {
         log.debug("REST request to get all Books");
-        return bookRepository.findAll().stream().map(BookResponse::from).collect(Collectors.toList());
+        List<Book> books = bookRepository.findAll();
+        return ResponseEntity.ok(new BooksResponse(books));
     }
 
     /**
