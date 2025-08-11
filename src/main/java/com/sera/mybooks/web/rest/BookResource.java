@@ -5,11 +5,13 @@ import com.sera.mybooks.domain.Book;
 import com.sera.mybooks.repository.AuthorRepository;
 import com.sera.mybooks.repository.BookRepository;
 import com.sera.mybooks.web.rest.dto.request.BookRequest;
+import com.sera.mybooks.web.rest.dto.request.BookUpdateStatusRequest;
 import com.sera.mybooks.web.rest.dto.response.BookResponse;
 import com.sera.mybooks.web.rest.dto.response.BooksResponse;
 import com.sera.mybooks.web.rest.errors.AuthorNotFoundException;
 import com.sera.mybooks.web.rest.errors.BadRequestAlertException;
 import com.sera.mybooks.web.rest.errors.BookAlreadyExistsException;
+import com.sera.mybooks.web.rest.errors.BookNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -76,28 +78,23 @@ public class BookResource {
      * {@code PUT  /books/:id} : Updates an existing book.
      *
      * @param id the id of the book to save.
-     * @param book the book to update.
+     * @param request the {@link BookUpdateStatusRequest}
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated book,
      * or with status {@code 400 (Bad Request)} if the book is not valid,
      * or with status {@code 500 (Internal Server Error)} if the book couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/books/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable(value = "id", required = false) final Long id, @RequestBody Book book)
-        throws URISyntaxException {
-        log.debug("REST request to update Book : {}, {}", id, book);
-        if (book.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, book.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
+    public ResponseEntity<BookResponse> updateStatus(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody BookUpdateStatusRequest request
+    ) throws URISyntaxException {
+        log.debug("REST request to update Book status : {}, {}", id, request);
 
-        if (!bookRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
+        Book book = this.bookRepository.findById(id).orElseThrow();
+        book.setReadStatus(request.getStatus());
 
-        Book result = bookRepository.save(book);
+        BookResponse result = BookResponse.from(bookRepository.save(book));
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, book.getId().toString()))

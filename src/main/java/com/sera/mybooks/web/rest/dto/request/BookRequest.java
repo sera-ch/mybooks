@@ -1,6 +1,7 @@
 package com.sera.mybooks.web.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sera.mybooks.domain.Book;
 import com.sera.mybooks.domain.enumeration.ReadStatus;
 
@@ -9,6 +10,8 @@ public class BookRequest {
 
     String name;
     String author;
+
+    @JsonProperty(value = "status", defaultValue = "WISHLIST")
     ReadStatus readStatus;
 
     public BookRequest(String name, String author, ReadStatus readStatus) {
